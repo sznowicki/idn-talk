@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IDN Frontend validation</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main>
+        <h2>Default input.type=email</h2>
+        <form id="default">
+            <label>
+                Email:
+                <input type="email" />
+            </label>
+            <button type="submit">submit</button>
+        </form>
+        <h2>Default input.type=text</h2>
+        <form id="text">
+            <label>
+                Text:
+                <input type="text" />
+            </label>
+            <button type="submit">submit</button>
+        </form>
+        <h2>Dynamic validation</h2>
+        <form id="dynamic" method="POST">
+            <label>
+                Dynamic:
+                <input type="email" name="email" id="dynamicEmailInput" />
+            </label>
+            <label>
+                State
+                <input type="text" disabled value="Frontend validation" id="state" />
+            </label>
+            <button type="submit">submit</button>
+        </form>
+    </main>
+    <script>
+        function text() {
+            const textForm = document.getElementById('text');
+            textForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Sent');
+            })
+        }
+        function dynamic() {
+            const dynamicForm = document.getElementById('dynamic');
+            const dynamicEmailInput = document.getElementById('dynamicEmailInput');
+            const stateInput = document.getElementById('state');
+
+            function setNoValidate(value) {
+                if (value) {
+                    dynamicForm.setAttribute('novalidate', 'novalidate');
+                } else {
+                    dynamicForm.removeAttribute('novalidate');
+                }
+                stateInput.value = value ? 'No validation' : 'Frontend validation';
+            }
+
+            dynamicEmailInput.addEventListener('input', (e) => {
+                const value = e.target.value;
+                const plainMatch = value.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) !== null;
+                const intlMatch = value.match(/.+@.+/) !== null;
+                setNoValidate(!plainMatch && intlMatch);
+            });
+            dynamicForm.addEventListener('submit', (e) => {
+                // e.preventDefault();
+                alert('Sent');
+            })
+        }
+        dynamic();
+        text();
+    </script>
+</body>
+</html>
